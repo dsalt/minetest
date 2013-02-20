@@ -58,6 +58,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "rollback.h"
 #include "util/serialize.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <errno.h>
+
 #define PP(x) "("<<(x).X<<","<<(x).Y<<","<<(x).Z<<")"
 
 #define BLOCK_EMERGE_FLAG_FROMDISK (1<<0)
@@ -1065,6 +1070,31 @@ Server::Server(
 	assert(m_lua);
 	// Export API
 	scriptapi_export(m_lua, this);
+	// Load and run "mod" hook scripts
+	for(std::vector<ModSpec>::iterator i = m_mods.begin();
+			i != m_mods.end(); i++){
+		const ModSpec &mod = *i;
+		std::string scriptpath = mod.path + DIR_DELIM + "hooks.lua";
+
+		struct stat st;
+		if(stat(scriptpath.c_str(), &st))
+		{ // error (but ENOENT is okay)
+			int err = errno;
+			if(err == ENOENT)
+				st.st_mode = 0;
+		}
+		if((st.st_mode & S_IFMT) == 0)
+			continue; // not there
+
+		infostream<<"  ["<<padStringRight(mod.name, 12)<<"] [\""
+				<<scriptpath<<"\"]"<<std::endl;
+		bool success = scriptapi_loadmod(m_lua, scriptpath, mod.name);
+		if(!success){
+			errorstream<<"Server: Failed to load and run "
+					<<scriptpath<<std::endl;
+			throw ModError("Failed to load and run "+scriptpath);
+		}
+	}
 	// Load and run builtin.lua
 	infostream<<"Server: Loading builtin.lua [\""
 			<<builtinpath<<"\"]"<<std::endl;
