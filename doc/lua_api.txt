@@ -24,8 +24,8 @@ If you have any difficulty in understanding this, please read:
 
 Startup
 --------
-Mods are loaded during server startup from the mod load paths by running
-the init.lua scripts in a shared environment.
+Mods are loaded during server startup from the mod load paths by running the
+hooks.lua scripts (if present) and init.lua scripts in a shared environment.
 
 Mod load path
 -------------
@@ -70,6 +70,7 @@ Mod directory structure
 mods
 |-- modname
 |   |-- depends.txt
+|   |-- hooks.lua
 |   |-- init.lua
 |   |-- textures
 |   |   |-- modname_stuff.png
@@ -86,6 +87,11 @@ modname:
 depends.txt:
   List of mods that have to be loaded before loading this mod.
   A single line contains a single modname.
+
+hooks.lua:
+  An optional Lua script, intended for setup of anything which needs to be
+  initialised early, e.g. registration functions for use by other mods or
+  interception of registration calls for extending functionality.
 
 init.lua:
   The main Lua script. Running this script should register everything it
