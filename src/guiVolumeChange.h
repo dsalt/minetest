@@ -2,6 +2,7 @@
 Part of Minetest
 Copyright (C) 2010-2013 celeron55, Perttu Ahola <celeron55@gmail.com>
 Copyright (C) 2013 Ciaran Gultnieks <ciaran@ciarang.com>
+Copyright (C) 2013 RealBadAngel, Maciej Kasatkin <mk@realbadangel.pl>
 
 Permission to use, copy, modify, and distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
@@ -16,22 +17,22 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifndef GUIPASSWORDCHANGE_HEADER
-#define GUIPASSWORDCHANGE_HEADER
+#ifndef GUIVOLUMECHANGE_HEADER
+#define GUIVOLUMECHANGE_HEADER
 
 #include "irrlichttypes_extrabloated.h"
 #include "modalMenu.h"
 #include "client.h"
 #include <string>
 
-class GUIPasswordChange : public GUIModalMenu
+class GUIVolumeChange : public GUIModalMenu
 {
 public:
-	GUIPasswordChange(gui::IGUIEnvironment* env,
+	GUIVolumeChange(gui::IGUIEnvironment* env,
 			gui::IGUIElement* parent, s32 id,
 			IMenuManager *menumgr,
 			Client* client);
-	~GUIPasswordChange();
+	~GUIVolumeChange();
 	
 	void removeChildren();
 	/*
@@ -40,8 +41,6 @@ public:
 	void regenerateGui(v2u32 screensize);
 
 	void drawMenu();
-
-	bool acceptInput();
 
 	bool OnEvent(const SEvent& event);
 	

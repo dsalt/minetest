@@ -1,6 +1,6 @@
 /*
-Minetest-c55
-Copyright (C) 2010 celeron55, Perttu Ahola <celeron55@gmail.com>
+Minetest
+Copyright (C) 2013 celeron55, Perttu Ahola <celeron55@gmail.com>
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -184,6 +184,11 @@ void set_default_settings(Settings *settings)
 	settings->setDefault("congestion_control_min_rate", "10");
 	settings->setDefault("remote_media", "");
 	settings->setDefault("debug_log_level", "0");
+	settings->setDefault("emergequeue_limit_total", "256");
+	settings->setDefault("emergequeue_limit_diskonly", "");
+	settings->setDefault("emergequeue_limit_generate", "");
+	settings->setDefault("num_emerge_threads", "1");
+	
 	// physics stuff
 	settings->setDefault("movement_acceleration_default", "3");
 	settings->setDefault("movement_acceleration_air", "2");
@@ -201,6 +206,11 @@ void set_default_settings(Settings *settings)
 	//mapgen related things
 	settings->setDefault("mg_name", "v6");
 	settings->setDefault("water_level", "1");
+	settings->setDefault("liquid_finite", "false");
+	settings->setDefault("liquid_update", "1.0");
+	settings->setDefault("liquid_relax", "1");
+	settings->setDefault("liquid_fast_flood", "1");
+	
 	settings->setDefault("chunksize", "5");
 	settings->setDefault("mg_flags", "trees, caves, v6_biome_blend");
 	settings->setDefault("mgv6_freq_desert", "0.45");
