@@ -91,6 +91,11 @@ GUIConfigureWorld::GUIConfigureWorld(gui::IGUIEnvironment* env,
 		{
 			m_reverse_depends.insert(std::make_pair((*dep_it),modname));
 		}
+		for(std::set<std::string>::iterator dep_it = mod.soft_depends.begin();
+			dep_it != mod.soft_depends.end(); ++dep_it)
+		{
+			m_soft_reverse_depends.insert(std::make_pair((*dep_it),modname));
+		}
 	}
 
 	m_settings.readConfigFile((m_wspec.path + DIR_DELIM + "world.mt").c_str());
@@ -620,6 +625,21 @@ void GUIConfigureWorld::adjustSidebar()
 		m_dependencies_listbox->addItem(narrow_to_wide(dependency).c_str());
 	}
 
+	for(std::set<std::string>::iterator it=mspec.soft_depends.begin();
+		it != mspec.soft_depends.end(); ++it)
+	{
+		// check if it is an add-on mod or a game/world mod. We only
+		// want to show add-ons
+		std::string dependency = (*it);
+		if(m_gamemods.count(dependency) > 0)
+			dependency += " (" + m_gspec.id + ")";
+		else if(m_worldmods.count(dependency) > 0)
+			dependency += " (" + m_wspec.name + ")";
+		else if(m_addonmods.count(dependency) == 0)
+			dependency += " (missing)";
+		m_dependencies_listbox->addItem(narrow_to_wide(dependency + " [soft]").c_str());
+	}
+
 	// reverse dependencies of this mod:
 	std::pair< std::multimap<std::string, std::string>::iterator, 
 			std::multimap<std::string, std::string>::iterator > rdep = 
@@ -632,6 +652,18 @@ void GUIConfigureWorld::adjustSidebar()
 		std::string rdependency = (*it).second;
 		if(m_addonmods.count(rdependency) > 0)
 			m_rdependencies_listbox->addItem(narrow_to_wide(rdependency).c_str());
+	}
+
+	// soft reverse dependencies of this mod:
+	rdep = m_soft_reverse_depends.equal_range(modname);
+	for(std::multimap<std::string,std::string>::iterator it = rdep.first;
+		it != rdep.second; ++it)
+	{
+		// check if it is an add-on mod or a game/world mod. We only
+		// want to show add-ons
+		std::string rdependency = (*it).second;
+		if(m_addonmods.count(rdependency) > 0)
+			m_rdependencies_listbox->addItem(narrow_to_wide(rdependency + " [soft]").c_str());
 	}
 }
 
@@ -667,6 +699,16 @@ void GUIConfigureWorld::enableMod(std::string modname)
 	//also enable all dependencies
 	for(std::set<std::string>::iterator it=mspec.depends.begin();
 		it != mspec.depends.end(); ++it)
+	{
+		std::string dependency = *it;
+		// only enable it if it is an add-on mod
+		if(m_addonmods.count(dependency) > 0)
+			enableMod(dependency);
+	}
+	//and all soft dependencies
+	//FIXME: make this optional?
+	for(std::set<std::string>::iterator it=mspec.soft_depends.begin();
+		it != mspec.soft_depends.end(); ++it)
 	{
 		std::string dependency = *it;
 		// only enable it if it is an add-on mod

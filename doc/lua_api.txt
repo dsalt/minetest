@@ -85,7 +85,8 @@ modname:
 
 depends.txt:
   List of mods that have to be loaded before loading this mod.
-  A single line contains a single modname.
+  A single line contains a single modname, optionally prefixed by '?'.
+  If so prefixed, then the mod is a soft dependency.
 
 init.lua:
   The main Lua script. Running this script should register everything it

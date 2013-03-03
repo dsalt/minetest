@@ -65,6 +65,7 @@ private:
 	
 	// for each mod, the set of mods depending on it
 	std::multimap<std::string, std::string> m_reverse_depends;
+	std::multimap<std::string, std::string> m_soft_reverse_depends;
 
 	// the settings in the world.mt file
 	Settings m_settings;

@@ -52,20 +52,27 @@ struct ModSpec
 	std::string path;
 	//if normal mod:
 	std::set<std::string> depends;
+	std::set<std::string> soft_depends;
 	std::set<std::string> unsatisfied_depends;
 
 	bool is_modpack;
 	// if modpack:
 	std::map<std::string,ModSpec> modpack_content;
 	ModSpec(const std::string name_="", const std::string path_="",
-			const std::set<std::string> depends_=std::set<std::string>()):
+			const std::set<std::string> depends_=std::set<std::string>(),
+			const std::set<std::string> soft_depends_=std::set<std::string>()):
 		name(name_),
 		path(path_),
 		depends(depends_),
+		soft_depends(soft_depends_),
 		unsatisfied_depends(depends_),
 		is_modpack(false),	
 		modpack_content()	
-	{}
+	{
+//		std::set<std::string>::iterator i;
+//		for (i = soft_depends.begin(); i != soft_depends.end(); ++i)
+//			unsatisfied_depends.insert(*i);
+	}
 };
 
 

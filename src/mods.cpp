@@ -51,7 +51,7 @@ std::map<std::string, ModSpec> getModsInPath(std::string path)
 		}
 		else // not a modpack, add the modspec
 		{
-			std::set<std::string> depends;
+			std::set<std::string> depends, soft_depends;
 			std::ifstream is((modpath+DIR_DELIM+"depends.txt").c_str(),
 				std::ios_base::binary);
 			while(is.good())
@@ -60,10 +60,17 @@ std::map<std::string, ModSpec> getModsInPath(std::string path)
 				std::getline(is, dep);
 				dep = trim(dep);	
 				if(dep != "")
-					depends.insert(dep);
+				{
+					if(dep[0] == '?') // soft dependency?
+{std::cout<<"adding soft dep "<<dep.substr(1)<<std::endl;
+						soft_depends.insert(trim(dep.substr(1)));
+}
+					else
+						depends.insert(dep);
+				}
 			}
 
-			ModSpec spec(modname, modpath, depends);
+			ModSpec spec(modname, modpath, depends, soft_depends);
 			result.insert(std::make_pair(modname,spec));
 		}
 	}
